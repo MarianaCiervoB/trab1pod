@@ -1,0 +1,8 @@
+Explicação do Bucket Sort implementado
+Criação dos baldes: O programa cria um array de baldes (buckets) onde cada balde é um array de inteiros.
+
+Distribuição dos elementos: Cada elemento é colocado em um balde específico baseado em seu valor. Elementos menores vão para baldes iniciais, maiores para finais.
+
+Ordenação dos baldes: Cada balde não vazio é ordenado individualmente usando Insertion Sort (que é eficiente para pequenos conjuntos de dados).
+
+Concatenação: Os elementos de todos os baldes são concatenados em ordem para produzir o array final ordenado.
