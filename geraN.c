@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(int argc, char *argv[]){
+int numgerados(int argc, char *argv[]){
   unsigned int i, val, N;
   if(argc == 2){
     N = val = atoi(argv[1]);
@@ -24,6 +24,5 @@ int main(int argc, char *argv[]){
   val++;
   for(i=0; i<N; i++)
     printf("%u\n", (unsigned int) rand()%val);
-
   exit(0);
 }
