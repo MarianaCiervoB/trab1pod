@@ -1,12 +1,8 @@
-/*
-  Programa que utiliza versão modificada de gaps no Shell sort para ordenar
-  parcialmente dados da entrada.
-*/
-
+/* Programa que utiliza versão modificada de gaps no Shell sort para ordenar parcialmente dados da entrada.*/
 #include <stdio.h>
 #include <stdlib.h>
 
-void imprime(int *vetor, int tam){
+static void imprime(int *vetor, int tam){
   int cont;
   for(cont=0; cont<tam; cont++)
 	printf("%d\n", vetor[cont]);
@@ -15,9 +11,7 @@ void imprime(int *vetor, int tam){
 
 int *parcOrd(int *vet, int tam){
   int i, j, k=0, temp;
-/* quanto menor o gap final, mais próximos os valores de sua posição final */
-//  int gaps[8]={701,301,132,57,23,10,4};
-  int gaps[8]={701,301,132,57,23,10,4,2};
+  int gaps[8]={701,301,132,57,23,10,4,2}; /* quanto menor o gap final, mais próximos os valores de sua posição final */
   while (gaps[k] > ((tam/2)-1))
 	k++;
   while( gaps[k] >= 1 ){
@@ -35,7 +29,7 @@ int *parcOrd(int *vet, int tam){
   return vet;
 }
 
-int main(int argc, char *argv[]){
+void parcialmente(int argc, char *argv[]){
   int  i;
   int *vet;
   char linha[16];
@@ -58,6 +52,5 @@ int main(int argc, char *argv[]){
 
   parcOrd(vet, tamVet);
   imprime(vet, tamVet);
-
   exit(0);
 }
