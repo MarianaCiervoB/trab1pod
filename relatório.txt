@@ -1,8 +1,70 @@
-Explicação do Bucket Sort implementado
-Criação dos baldes: O programa cria um array de baldes (buckets) onde cada balde é um array de inteiros.
+# Guia de Funções do Programa de Ordenação
 
-Distribuição dos elementos: Cada elemento é colocado em um balde específico baseado em seu valor. Elementos menores vão para baldes iniciais, maiores para finais.
+## Funções Principais
 
-Ordenação dos baldes: Cada balde não vazio é ordenado individualmente usando Insertion Sort (que é eficiente para pequenos conjuntos de dados).
+### `print(int *vetor, int tam)`
+**Finalidade:** Imprime um vetor de inteiros formatado com vírgulas  
+**Parâmetros:**
+- `vetor`: Ponteiro para o vetor a ser impresso
+- `tam`: Tamanho do vetor  
+**Observação:** Tá comentado pq imprimir 1000 números é foda né, mas se quiser usar em teste de vetor menor
 
-Concatenação: Os elementos de todos os baldes são concatenados em ordem para produzir o array final ordenado.
+### `geraN(int *vet, int tam, int limite)`
+**Finalidade:** Gera números aleatórios e armazena em um vetor  
+**Parâmetros:**
+- `vet`: Vetor de destino
+- `tam`: Tamanho do vetor
+- `limite`: Valor máximo para os números aleatórios
+
+### `parcOrdAsc(int *vet, int tam)`
+**Finalidade:** Ordenação parcial usando uma variação do Shell Sort  
+**Características:**
+- Usa a sequência de gaps {701,301,132,57,23,10,4,2} (?não sei o que er)
+- Ordena parcialmente o vetor em ordem ascendente
+
+### `insertionSort(int *vet, int tam)`
+**Finalidade:** Implementação clássica do Insertion Sort  
+**Uso:** Utilizado internamente pelo Bucket Sort
+
+## Algoritmos de Ordenação
+
+### `bucketSortTradicional(int *vet, int tam)`
+**Finalidade:** Implementação do algoritmo Bucket Sort  
+**Funcionamento:**
+1. Cria baldes (buckets) baseados no tamanho do vetor
+2. Distribui os elementos nos baldes
+3. Ordena cada balde com Insertion Sort
+4. Concatena os baldes ordenados
+
+### `quickSort(int *vet, int low, int high)`
+**Finalidade:** Implementação recursiva do Quick Sort  
+**Componentes:**
+- Utiliza a função `partitionQS` para o particionamento
+- Ordena in-place com complexidade média O(n log n)
+
+## Funções Auxiliares
+
+### `swap(int *a, int *b)`
+**Finalidade:** Troca os valores de duas variáveis inteiras
+
+### `partitionQS(int *vet, int low, int high)`
+**Finalidade:** Função de particionamento para o Quick Sort  
+**Retorno:** Índice do pivô após o particionamento
+
+## Função Principal (`main`)
+**Fluxo de Execução:**
+1. Menu de seleção do tipo de ordenação
+2. Alocação de memória para os vetores
+3. Geração dos valores (aleatórios ou parcialmente ordenados)
+4. Execução e medição de tempo dos algoritmos
+5. Exibição dos resultados
+
+**Características:**
+- Compara o desempenho entre Bucket Sort e Quick Sort
+- Permite testar com dados aleatórios ou parcialmente ordenados
+- Medição precisa de tempo usando `clock()`
+
+
+
+OBS: têm alguns comentários soltos na main que dizem respeito as funções merge e heap, é só pra lembrar de acrescentar aquelas linhas no final, 
+não precisa se basear nelas, são nomes bem ruinskkkkkk
