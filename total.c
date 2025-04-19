@@ -10,7 +10,7 @@
  *   limite - valor maximo para os numeros aleatorios
 */
 
-/* Imprime um vetor de inteiros separados por virgula  */
+/* Imprime um vetor de inteiros separados por virgula
 static void print(int *vetor, int tam) {
     int cont;
     for(cont = 0; cont < tam; cont++) {
@@ -18,6 +18,7 @@ static void print(int *vetor, int tam) {
         else printf("%d, ", vetor[cont]);
     }
 }
+*/
 
 /* Gera numeros aleatorios e armazena em um vetor */
 void geraN(int *vet, int tam, int limite) {
@@ -77,18 +78,15 @@ void bucketSortTradicional(int *vet, int tam) {
     for(i = 0; i < num_buckets; i++) {
         buckets[i] = (int *)malloc(tam * sizeof(int));
     }
-
     /* Encontra o maior valor */
     for(i = 1; i < tam; i++) {
         if(vet[i] > max_val) max_val = vet[i];
     }
-
     /* Distribui os elementos nos baldes */
     for(i = 0; i < tam; i++) {
         int bucket_idx = (vet[i] * num_buckets) / (max_val + 1);
         buckets[bucket_idx][bucket_sizes[bucket_idx]++] = vet[i];
     }
-
     /* Ordena cada balde e concatena os resultados */
     for(i = 0; i < num_buckets; i++) {
         if(bucket_sizes[i] > 0) {
@@ -99,7 +97,6 @@ void bucketSortTradicional(int *vet, int tam) {
         }
         free(buckets[i]);
     }
-
     /* Libera memoria */
     free(buckets);
     free(bucket_sizes);
@@ -141,7 +138,7 @@ int main() {
     int *vet, *copiavet /* , *copia_do_vetor_para_merge, *copia_do_vetor_para_heap */ ;
     int tamVet, opcao, limite, i;
     char linha[32];
-    clock_t inicio = 0, fim = 0;
+    clock_t inicio, fim;
     double tempo_bucket, tempo_quick /* , tempo_merge, tempo_heap */ ;
 
     /* Inicializa semente aleatoria */
@@ -165,9 +162,9 @@ int main() {
     copia_do_vetor_para_merge = (int *)malloc(sizeof(int) * tamVet);
     copia_do_vetor_para_heap = (int *)malloc(sizeof(int) * tamVet);
     */
-    if (vet == NULL || copiavet == NULL) {
-        printf("Erro de alocacao de memoria.\n");
-        return 1;
+    if (vet == NULL || copiavet == NULL /* || copia_do_vetor_para_merge == NULL || copia_do_vetor_para_heap == NULL */) {
+    printf("Erro de alocacao de memoria.\n");
+    return 1;
     }
 
     printf("Limite superior dos valores: ");
@@ -190,9 +187,6 @@ int main() {
         return 1;
     }
 
-    printf("\nValores gerados originalmente:\n");
-    print(vet, tamVet);
-
     /* Faz cópia do vetor original para ambos algoritmos */
     for (i = 0; i < tamVet; i++) {
         copiavet[i] = vet[i] /* = copia_do_vetor_para_merge[i] = copia_do_vetor_para_heap[i] */ ;
@@ -201,9 +195,8 @@ int main() {
     /* Bucket Sort tradicional*/
     inicio = clock();
     bucketSortTradicional(vet, tamVet);
+    fim = clock();
     tempo_bucket = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
-    printf("\nValores ordenados com Bucket Sort:\n");
-    print(vet, tamVet);
 
     /* Quick Sort */
     inicio = clock();
@@ -221,7 +214,7 @@ int main() {
     print(vet, tamVet);
     */
 
-    printf("\nTempo de execução:\n");
+    printf("\nTempo de execucao:\n");
     printf("- Bucket Sort: %.4f segundos\n", tempo_bucket);
     printf("- Quick Sort : %.4f segundos\n", tempo_quick);
 
