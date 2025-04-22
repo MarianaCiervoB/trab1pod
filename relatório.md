@@ -62,60 +62,51 @@ Array parcialmente ordenado
 
 Os algoritmos implementados e comparados foram:
 
-BubbleSort
+- BubbleSort
 
-QuickSort
+- QuickSort
 
-HeapSort
+- HeapSort
 
-BucketSort (com ordenação interna usando InsertionSort)
+- BucketSort Tradicional (com ordenação interna usando InsertionSort)
 
-🛠️ Detalhes dos Algoritmos
-🫧 BubbleSort
+Detalhes dos Algoritmos
+* BubbleSort
 Funcionamento: compara elementos vizinhos e os troca se estiverem fora de ordem.
 
 Complexidade: O(n²) no pior e médio caso.
 
-Observações: Simples, mas extremamente ineficiente para arrays grandes.
+Observações: Simples e extremamente ineficiente para arrays grandes.
 
-⚡ QuickSort (iterativo)
+* QuickSort (iterativo)
 Funcionamento: divide o array em duas partições usando um pivô, recursivamente (aqui, feito com pilha).
 
-Complexidade: O(n log n) no caso médio; O(n²) no pior (se o pivô for mal escolhido).
+Complexidade: O(n log n) no caso médio; O(n²) no pior (se for uma má escolha de pivô).
 
-Observações: Muito rápido na média; algoritmo de uso geral excelente.
+Observações: Muito rápido na média; algoritmo muito bom de uso geral.
 
-🔺 HeapSort
+* HeapSort
 Funcionamento: transforma o array em um heap máximo e vai removendo o maior elemento.
 
 Complexidade: O(n log n) sempre.
 
 Observações: Desempenho estável, mas com mais overhead que o QuickSort.
 
-🪣 BucketSort
-Funcionamento:
+* BucketSort
+Funcionamento: Divide os elementos em "baldes" com base em um intervalo (range). Ordena cada balde individualmente com outro algoritmo e depois concatena todos os baldes no array final.
 
-Divide os elementos em "baldes" com base em um intervalo (range);
-
-Ordena cada balde individualmente com outro algoritmo;
-
-Junta todos os baldes no array final.
-
-📦 Escolha do Tamanho do Bucket:
+Escolha do Tamanho do Bucket(range):
 Fórmula usada: bucket_range = (max_value + 1) / bucket_count + 1
 
-bucket_count foi fixado em 10, por ser um número razoável que divide bem os valores aleatórios sem criar buckets sobrecarregados ou vazios demais.
+bucket_count foi fixado em 10, por ser um número que divide bem os valores aleatórios sem criar buckets sobrecarregados ou vazios demais. Valores pequenos criariam buckets grandes e tornariam a ordenação interna mais lenta; valores altos criariam overhead com muitos buckets vazios.
 
-Justificativa: balancear performance e simplicidade; valores pequenos criariam buckets grandes e tornariam a ordenação interna mais lenta; valores altos criariam overhead com muitos buckets vazios.
-
-📑 Algoritmo de ordenação usado nos buckets: InsertionSort
-Por que essa escolha?
+* Algoritmo de ordenação usado nos buckets: InsertionSort
 
 InsertionSort é muito eficiente em subarrays pequenos ou quase ordenados (o que é geralmente o caso dentro dos buckets);
 
 Tem baixa complexidade de implementação e memória.
 
-⚖️ Comparação entre os algoritmos
+ Comparação entre os algoritmos
 
 Algoritmo	Caso ideal	Caso ruim	Complexidade média	Observações principais
 BubbleSort	Pequenos arrays quase ordenados	Arrays grandes ou totalmente bagunçados	O(n²)	Muito ineficiente em geral
