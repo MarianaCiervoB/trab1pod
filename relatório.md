@@ -108,11 +108,12 @@ Tem baixa complexidade de implementação e memória.
 
  Comparação entre os algoritmos
 
-Algoritmo	Caso ideal	Caso ruim	Complexidade média	Observações principais
-BubbleSort	Pequenos arrays quase ordenados	Arrays grandes ou totalmente bagunçados	O(n²)	Muito ineficiente em geral
-QuickSort	Arrays grandes aleatórios	Dados já ordenados ou todos iguais	O(n log n)	Rápido, mas pode cair em O(n²)
-HeapSort	Dados grandes e aleatórios	-	O(n log n)	Estável, mas levemente mais lento que o QuickSort
-BucketSort	Dados uniformemente distribuídos	Dados concentrados em poucos valores	O(n + k)	Ótimo para inteiros com distribuição uniforme
+Algoritmo     | Caso ideal                       | Caso ruim                             | Complexidade média | Observações principais
+--------------|----------------------------------|----------------------------------------|---------------------|-------------------------
+BubbleSort    | Pequenos arrays quase ordenados  | Arrays grandes ou totalmente bagunçados| O(n²)               | Muito ineficiente em geral
+QuickSort     | Arrays grandes aleatórios        | Dados já ordenados ou todos iguais     | O(n log n)          | Rápido, mas pode cair em O(n²)
+HeapSort      | Dados grandes e aleatórios       | -                                      | O(n log n)          | Estável, mas levemente mais lento que o QuickSort
+BucketSort    | Dados uniformemente distribuídos | Dados concentrados em poucos valores   | O(n + k)            | Ótimo para inteiros com distribuição uniforme
 
 
 * Conclusões
