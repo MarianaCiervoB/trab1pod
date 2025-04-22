@@ -109,39 +109,119 @@ void swap(int *a, int *b) {
     *b = temp;
 }
 
-/* Partição do QuickSort */
-int partitionQS(int *vet, int low, int high) {
-    int pivot = vet[high];
-    int i = low - 1;
-    int j;
-    for(j = low; j < high; j++) {
-        if(vet[j] < pivot) {
-            i++;
-            swap(&vet[i], &vet[j]);
+/* Ordena por implementação do QuickSort iterativo */
+void quickSort(int *vet, int tam) {
+    int *stack;
+    int top = -1;
+    int high, low, pivot, i, j, partition;
+    
+    /* Cria uma pilha manual */
+    stack = malloc(tam * sizeof(int));
+    
+    /* Empilha os limites inicial e final */
+    stack[++top] = 0;
+    stack[++top] = tam - 1;
+
+    while (top >= 0) {
+        /* Desempilha os limites */
+        high = stack[top--];
+        low = stack[top--];
+        
+        /* Particiona o vetor */
+        pivot = vet[high];
+        i = low - 1;
+        
+        for (j = low; j <= high - 1; j++) {
+            if (vet[j] < pivot) {
+                i++;
+                swap(&vet[i], &vet[j]);
+            }
+        }
+        swap(&vet[i + 1], &vet[high]);
+        partition = i + 1;
+        
+        /* Empilha os subarrays esquerdo e direito */
+        if (partition - 1 > low) {
+            stack[++top] = low;
+            stack[++top] = partition - 1;
+        }
+        
+        if (partition + 1 < high) {
+            stack[++top] = partition + 1;
+            stack[++top] = high;
         }
     }
-    swap(&vet[i + 1], &vet[high]);
-    return i + 1;
+    
+    free(stack);
 }
 
-/* Ordena o vetor por QuickSort */
-void quickSort(int *vet, int low, int high) {
-    if(low < high) {
-        int pi = partitionQS(vet, low, high);
-        quickSort(vet, low, pi - 1);
-        quickSort(vet, pi + 1, high);
+/* Implementação do Merge Sort */
+void merge(int *vet, int l, int m, int r) {
+    int i, j, k;
+    int n1 = m - l + 1;
+    int n2 = r - m;
+    int *L, *R;
+
+    /* Cria arrays temporários */
+    L = malloc(n1 * sizeof(int));
+    R = malloc(n2 * sizeof(int));
+
+    /* Copia dados para os arrays temporários */
+    for (i = 0; i < n1; i++)
+        L[i] = vet[l + i];
+    for (j = 0; j < n2; j++)
+        R[j] = vet[m + 1 + j];
+
+    /* Merge os arrays temporários de volta ao array principal */
+    i = 0;
+    j = 0;
+    k = l;
+    
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            vet[k] = L[i];
+            i++;
+        } else {
+            vet[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+    /* Copia os elementos restantes de L[] */
+    while (i < n1) {
+        vet[k] = L[i];
+        i++;
+        k++;
+    }
+    /* Copia os elementos restantes de R[] */
+    while (j < n2) {
+        vet[k] = R[j];
+        j++;
+        k++;
+    }
+    free(L);
+    free(R);
+}
+
+void mergeSort(int *vet, int l, int r) {
+    int m;
+    if (l < r) {
+        m = l + (r - l) / 2;
+        mergeSort(vet, l, m);
+        mergeSort(vet, m + 1, r);
+        merge(vet, l, m, r);
     }
 }
 
 /* (Funcao principal) Menu de escolha para testar cada algoritmo de ordenacao */
 int main() {
-    int *vet, *copiavet /* , *copia_do_vetor_para_merge, *copia_do_vetor_para_heap */ ;
+    int *vet, *copia_vet_1, *copia_vet_2, *copia_vet_3;
     int tamVet, opcao, limite, i;
     char linha[32];
     clock_t inicio, fim;
-    double tempo_bucket, tempo_quick /* , tempo_merge, tempo_heap */ ;
+    double tempo_bucket, tempo_quick, tempo_merge, tempo_heap;
 
-    /* Inicializa semente aleatoria */
+    /* Inicializa o gerador de números aleatórios */
     srand(time(NULL));
 
     /* Menu de opcoes */
@@ -157,11 +237,10 @@ int main() {
     sscanf(linha, "%d", &tamVet);
 
     vet = (int *)malloc(sizeof(int) * tamVet);
-    copiavet = (int *)malloc(sizeof(int) * tamVet);
-    /*
-    copia_do_vetor_para_merge = (int *)malloc(sizeof(int) * tamVet);
-    copia_do_vetor_para_heap = (int *)malloc(sizeof(int) * tamVet);
-    */
+    copia_vet_1 = (int *)malloc(sizeof(int) * tamVet);
+    copia_vet_2 = (int *)malloc(sizeof(int) * tamVet);
+    copia_vet_3 = (int *)malloc(sizeof(int) * tamVet);
+
     if (vet == NULL || copiavet == NULL /* || copia_do_vetor_para_merge == NULL || copia_do_vetor_para_heap == NULL */) {
     printf("Erro de alocacao de memoria.\n");
     return 1;
