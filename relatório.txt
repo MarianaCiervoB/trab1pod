@@ -1,70 +1,134 @@
-# Guia de Funções do Programa de Ordenação
+ Função principal (main)
+Pergunta pro usuário se quer um array aleatório ou parcialmente ordenado;
 
-## Funções Principais
+Lê o tamanho do array;
 
-### `print(int *vetor, int tam)`
-**Finalidade:** Imprime um vetor de inteiros formatado com vírgulas  
-**Parâmetros:**
-- `vetor`: Ponteiro para o vetor a ser impresso
-- `tam`: Tamanho do vetor  
-**Observação:** Tá comentado pq imprimir 1000 números é foda né, mas se quiser usar em teste de vetor menor
+Cria 5 cópias do array (pra testar cada algoritmo com a mesma entrada);
 
-### `geraN(int *vet, int tam, int limite)`
-**Finalidade:** Gera números aleatórios e armazena em um vetor  
-**Parâmetros:**
-- `vet`: Vetor de destino
-- `tam`: Tamanho do vetor
-- `limite`: Valor máximo para os números aleatórios
+Executa e mede o tempo de execução de cada algoritmo de ordenação;
 
-### `parcOrdAsc(int *vet, int tam)`
-**Finalidade:** Ordenação parcial usando uma variação do Shell Sort  
-**Características:**
-- Usa a sequência de gaps {701,301,132,57,23,10,4,2} (?não sei o que er)
-- Ordena parcialmente o vetor em ordem ascendente
+Mostra os tempos no final.
 
-### `insertionSort(int *vet, int tam)`
-**Finalidade:** Implementação clássica do Insertion Sort  
-**Uso:** Utilizado internamente pelo Bucket Sort
+🧩 Funções auxiliares
+generateRandomArray
+Gera um array com valores aleatórios entre 0 e max_value.
 
-## Algoritmos de Ordenação
+generatePartiallySortedArray
+Cria um array aleatório e depois aplica uma ordenação parcial, pra simular dados "meio bagunçados".
 
-### `bucketSortTradicional(int *vet, int tam)`
-**Finalidade:** Implementação do algoritmo Bucket Sort  
-**Funcionamento:**
-1. Cria baldes (buckets) baseados no tamanho do vetor
-2. Distribui os elementos nos baldes
-3. Ordena cada balde com Insertion Sort
-4. Concatena os baldes ordenados
+partialSort
+Ordena parcialmente o array usando uma técnica parecida com o Shell Sort, mas só até certo ponto (usando alguns gaps específicos).
 
-### `quickSort(int *vet, int low, int high)`
-**Finalidade:** Implementação recursiva do Quick Sort  
-**Componentes:**
-- Utiliza a função `partitionQS` para o particionamento
-- Ordena in-place com complexidade média O(n log n)
+swap
+Troca dois valores de lugar — usada em vários algoritmos.
 
-## Funções Auxiliares
+🔄 Algoritmos de ordenação
+bubbleSort
+Clássico e lerdinho: compara elementos vizinhos e troca se tiver fora de ordem. Vai repetindo até tudo ficar certo.
 
-### `swap(int *a, int *b)`
-**Finalidade:** Troca os valores de duas variáveis inteiras
+insertionSort
+Usado no BucketSort. Insere cada elemento na posição correta comparando com os anteriores — tipo organizar cartas na mão.
 
-### `partitionQS(int *vet, int low, int high)`
-**Finalidade:** Função de particionamento para o Quick Sort  
-**Retorno:** Índice do pivô após o particionamento
+quickSort
+Implementado de forma iterativa com pilha (sem recursão). Escolhe um pivô, separa os menores à esquerda e os maiores à direita, e repete o processo.
 
-## Função Principal (`main`)
-**Fluxo de Execução:**
-1. Menu de seleção do tipo de ordenação
-2. Alocação de memória para os vetores
-3. Geração dos valores (aleatórios ou parcialmente ordenados)
-4. Execução e medição de tempo dos algoritmos
-5. Exibição dos resultados
+heapSort
+Transforma o array em um heap máximo e vai tirando o maior elemento (raiz) e jogando pro final do array.
 
-**Características:**
-- Compara o desempenho entre Bucket Sort e Quick Sort
-- Permite testar com dados aleatórios ou parcialmente ordenados
-- Medição precisa de tempo usando `clock()`
+Usa a função heapify pra manter a estrutura de heap.
+
+bucketSort
+Divide os elementos em baldes (buckets) com base no valor, ordena cada bucket com insertionSort e junta tudo no final.
+
+💡 Resumo da ideia geral:
+Gera um array (aleatório ou parcialmente ordenado);
+
+Copia ele várias vezes pra manter o teste justo;
+
+Aplica cada algoritmo de ordenação;
+
+Cronometra e mostra quanto tempo cada um levou;
 
 
 
-OBS: têm alguns comentários soltos na main que dizem respeito as funções merge e heap, é só pra lembrar de acrescentar aquelas linhas no final, 
-não precisa se basear nelas, são nomes bem ruinskkkkkk
+
+Relatório: Comparação de Algoritmos de Ordenação com Diferentes Tipos de Arrays
+🧠 Objetivo
+O objetivo deste experimento é avaliar o desempenho de diferentes algoritmos de ordenação em arrays de inteiros com tamanhos variáveis, considerando dois cenários:
+
+Array totalmente aleatório
+
+Array parcialmente ordenado
+
+Os algoritmos implementados e comparados foram:
+
+BubbleSort
+
+QuickSort
+
+HeapSort
+
+BucketSort (com ordenação interna usando InsertionSort)
+
+🛠️ Detalhes dos Algoritmos
+🫧 BubbleSort
+Funcionamento: compara elementos vizinhos e os troca se estiverem fora de ordem.
+
+Complexidade: O(n²) no pior e médio caso.
+
+Observações: Simples, mas extremamente ineficiente para arrays grandes.
+
+⚡ QuickSort (iterativo)
+Funcionamento: divide o array em duas partições usando um pivô, recursivamente (aqui, feito com pilha).
+
+Complexidade: O(n log n) no caso médio; O(n²) no pior (se o pivô for mal escolhido).
+
+Observações: Muito rápido na média; algoritmo de uso geral excelente.
+
+🔺 HeapSort
+Funcionamento: transforma o array em um heap máximo e vai removendo o maior elemento.
+
+Complexidade: O(n log n) sempre.
+
+Observações: Desempenho estável, mas com mais overhead que o QuickSort.
+
+🪣 BucketSort
+Funcionamento:
+
+Divide os elementos em "baldes" com base em um intervalo (range);
+
+Ordena cada balde individualmente com outro algoritmo;
+
+Junta todos os baldes no array final.
+
+📦 Escolha do Tamanho do Bucket:
+Fórmula usada: bucket_range = (max_value + 1) / bucket_count + 1
+
+bucket_count foi fixado em 10, por ser um número razoável que divide bem os valores aleatórios sem criar buckets sobrecarregados ou vazios demais.
+
+Justificativa: balancear performance e simplicidade; valores pequenos criariam buckets grandes e tornariam a ordenação interna mais lenta; valores altos criariam overhead com muitos buckets vazios.
+
+📑 Algoritmo de ordenação usado nos buckets: InsertionSort
+Por que essa escolha?
+
+InsertionSort é muito eficiente em subarrays pequenos ou quase ordenados (o que é geralmente o caso dentro dos buckets);
+
+Tem baixa complexidade de implementação e memória.
+
+⚖️ Comparação entre os algoritmos
+
+Algoritmo	Caso ideal	Caso ruim	Complexidade média	Observações principais
+BubbleSort	Pequenos arrays quase ordenados	Arrays grandes ou totalmente bagunçados	O(n²)	Muito ineficiente em geral
+QuickSort	Arrays grandes aleatórios	Dados já ordenados ou todos iguais	O(n log n)	Rápido, mas pode cair em O(n²)
+HeapSort	Dados grandes e aleatórios	-	O(n log n)	Estável, mas levemente mais lento que o QuickSort
+BucketSort	Dados uniformemente distribuídos	Dados concentrados em poucos valores	O(n + k)	Ótimo para inteiros com distribuição uniforme
+💬 Conclusões
+QuickSort geralmente é o mais rápido nos testes realizados, especialmente com arrays totalmente aleatórios;
+
+HeapSort tem desempenho mais estável, sem cair em piores casos como o QuickSort pode sofrer;
+
+BubbleSort só serve como referência didática; seu desempenho é inaceitável para arrays grandes;
+
+BucketSort, com InsertionSort nos baldes, se sai muito bem quando os dados são bem distribuídos, mas pode perder eficiência se os dados se acumulam em poucos buckets;
+
+Partially Sorted Arrays: algoritmos como InsertionSort e até BubbleSort têm performance relativamente melhor, mas ainda assim são superados por QuickSort e HeapSort.
