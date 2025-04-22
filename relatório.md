@@ -49,7 +49,7 @@ Aplica cada algoritmo de ordenação;
 
 Cronometra e mostra quanto tempo cada um levou;
 
-
+______________________________________________________________________________________________________________________________________________________
 
 
 Relatório: Comparação de Diferentes Algoritmos de Ordenação com Diferentes Tipos de Arrays
@@ -113,13 +113,15 @@ BubbleSort	Pequenos arrays quase ordenados	Arrays grandes ou totalmente bagunça
 QuickSort	Arrays grandes aleatórios	Dados já ordenados ou todos iguais	O(n log n)	Rápido, mas pode cair em O(n²)
 HeapSort	Dados grandes e aleatórios	-	O(n log n)	Estável, mas levemente mais lento que o QuickSort
 BucketSort	Dados uniformemente distribuídos	Dados concentrados em poucos valores	O(n + k)	Ótimo para inteiros com distribuição uniforme
-💬 Conclusões
-QuickSort geralmente é o mais rápido nos testes realizados, especialmente com arrays totalmente aleatórios;
 
-HeapSort tem desempenho mais estável, sem cair em piores casos como o QuickSort pode sofrer;
 
-BubbleSort só serve como referência didática; seu desempenho é inaceitável para arrays grandes;
+* Conclusões
+QuickSort geralmente é o mais rápido nos testes realizados, especialmente para arrays totalmente aleatórios;
+
+HeapSort é mais estável, sem cair em piores casos como o QuickSort pode sofrer;
+
+BubbleSort só serve como referência didática; seu desempenho é horrível para arrays grandes;
 
 BucketSort, com InsertionSort nos baldes, se sai muito bem quando os dados são bem distribuídos, mas pode perder eficiência se os dados se acumulam em poucos buckets;
 
-Partially Sorted Arrays: algoritmos como InsertionSort e até BubbleSort têm performance relativamente melhor, mas ainda assim são superados por QuickSort e HeapSort.
+Em arrays parcialmente ordenados, algoritmos como InsertionSort e até BubbleSort têm performance relativamente melhor, mas ainda assim são superados por QuickSort e HeapSort.
