@@ -241,7 +241,7 @@ int main() {
     copia_vet_2 = (int *)malloc(sizeof(int) * tamVet);
     copia_vet_3 = (int *)malloc(sizeof(int) * tamVet);
 
-    if (vet == NULL || copiavet == NULL /* || copia_do_vetor_para_merge == NULL || copia_do_vetor_para_heap == NULL */) {
+    if (vet == NULL || copia_vet_1 == NULL /* || copia_do_vetor_para_merge == NULL || copia_do_vetor_para_heap == NULL */) {
     printf("Erro de alocacao de memoria.\n");
     return 1;
     }
@@ -258,7 +258,7 @@ int main() {
     } else {
         printf("Opcao invalida.\n");
         free(vet);
-        free(copiavet);
+        free(copia_vet_1);
         /*
         free(copia_do_vetor_para_merge)
         free(copia_do_vetor_para_heap)
@@ -268,7 +268,7 @@ int main() {
 
     /* Faz cópia do vetor original para ambos algoritmos */
     for (i = 0; i < tamVet; i++) {
-        copiavet[i] = vet[i] /* = copia_do_vetor_para_merge[i] = copia_do_vetor_para_heap[i] */ ;
+        copia_vet_1[i] = vet[i] /* = copia_do_vetor_para_merge[i] = copia_do_vetor_para_heap[i] */ ;
     }
 
     /* Bucket Sort tradicional*/
@@ -279,7 +279,7 @@ int main() {
 
     /* Quick Sort */
     inicio = clock();
-    quickSort(copiavet, 0, tamVet - 1);
+    quickSort(copia_vet_1, tamVet - 1);
     fim = clock();
     tempo_quick = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
 
@@ -298,7 +298,7 @@ int main() {
     printf("- Quick Sort : %.4f segundos\n", tempo_quick);
 
     free(vet);
-    free(copiavet);
+    free(copia_vet_1);
     /*
     free(copia_do_vetor_para_merge)
     free(copia_do_vetor_para_heap)
