@@ -3,19 +3,23 @@
 #include <time.h>
 
 /* Protótipos das funções */
-void generateRandomArray(int *array, int size, int max_value);
+void geraN(int *array, int size, int max_value);
 void swap(int *a, int *b);
 void insertionSort(int *array, int size);
+void bubbleSort(int *array, int size);  
 void quickSort(int *array, int size);
 void merge(int *array, int l, int m, int r);
 void mergeSort(int *array, int l, int r);
+void heapSort(int *array, int size);
+void heapify(int *array, int size, int i);
+
 
 /* Função principal */
 int main() {
-    int *array, *array_copy1, *array_copy2;
+    int *array, *array_copy1, *array_copy2, *array_copy3, *array_copy4;
     int size, max_value, i;
     clock_t start, end;
-    double quick_time, merge_time;
+    double quick_time, merge_time, heap_time, bubble_time;
 
     /* Inicializa o gerador de números aleatórios */
     srand(time(NULL));
@@ -27,31 +31,41 @@ int main() {
         printf("Tamanho invalido.\n");
         return 1;
     }
-
-    printf("Digite o valor maximo para os elementos: ");
-    scanf("%d", &max_value);
+    max_value = size;
 
     /* Aloca memória para os arrays */
     array = malloc(size * sizeof(int));
     array_copy1 = malloc(size * sizeof(int));
     array_copy2 = malloc(size * sizeof(int));
+    array_copy3 = malloc(size * sizeof(int));
+    array_copy4 = malloc(size * sizeof(int));
     
-    if (!array || !array_copy1 || !array_copy2) {
+    if (!array || !array_copy1 || !array_copy2 || !array_copy3 || !array_copy4) {
         printf("Erro na alocacao de memoria.\n");
         if (array) free(array);
         if (array_copy1) free(array_copy1);
         if (array_copy2) free(array_copy2);
+        if (array_copy3) free(array_copy3);
+        if (array_copy4) free(array_copy4);
         return 1;
     }
 
     /* Gera o array aleatório */
-    generateRandomArray(array, size, max_value);
+    geraN(array, size, max_value);
     
     /* Faz cópias do array original */
     for (i = 0; i < size; i++) {
         array_copy1[i] = array[i];
         array_copy2[i] = array[i];
+        array_copy3[i] = array[i];
+        array_copy4[i] = array[i];
     }
+
+    /* Testa o BubbleSort */
+    start = clock();
+    bubbleSort(array_copy4, size);
+    end = clock();
+    bubble_time = ((double)(end - start)) / CLOCKS_PER_SEC;
 
     /* Testa o QuickSort */
     start = clock();
@@ -65,20 +79,30 @@ int main() {
     end = clock();
     merge_time = ((double)(end - start)) / CLOCKS_PER_SEC;
 
+    /* Testa o HeapSort */
+    start = clock();
+    heapSort(array_copy3, size);
+    end = clock();
+    heap_time = ((double)(end - start)) / CLOCKS_PER_SEC;
+
     printf("\nResultados:\n");
+    printf("BubbleSort: %.2f segundos\n", bubble_time);
     printf("QuickSort: %.2f segundos\n", quick_time);
     printf("MergeSort: %.2f segundos\n", merge_time);
+    printf("HeapSort: %.2f segundos\n", heap_time);
 
     /* Libera a memória alocada */
     free(array);
     free(array_copy1);
     free(array_copy2);
+    free(array_copy3);
+    free(array_copy4);
     
     return 0;
 }
 
 /* Gera números aleatórios no vetor */
-void generateRandomArray(int *array, int size, int max_value) {
+void geraN(int *array, int size, int max_value) {
     int i;
     for (i = 0; i < size; i++) {
         array[i] = rand() % (max_value + 1);
@@ -90,6 +114,19 @@ void swap(int *a, int *b) {
     int temp = *a;
     *a = *b;
     *b = temp;
+}
+
+/* Implementação do Bubble Sort */
+void bubbleSort(int *array, int size) {
+    int i, j;
+    for (i = 0; i < size-1; i++) {
+      
+        for (j = 0; j < size-i-1; j++) {
+            if (array[j] > array[j+1]) {
+                swap(&array[j], &array[j+1]);
+            }
+        }
+    }
 }
 
 /* Implementação do Insertion Sort */
@@ -211,5 +248,42 @@ void mergeSort(int *array, int l, int r) {
         mergeSort(array, l, m);
         mergeSort(array, m + 1, r);
         merge(array, l, m, r);
+    }
+}
+
+void heapSort(int *array, int size) {
+    /* Declarar TODAS as variáveis no início */
+    int i, j;  
+    /* Construir o heap (reorganizar o array) */
+    for (i = size / 2 - 1; i >= 0; i--)
+        heapify(array, size, i);
+
+    /* Extrair elementos do heap um por um */
+    for (j = size - 1; j > 0; j--) {
+        swap(&array[0], &array[j]);
+        heapify(array, j, 0);
+    }
+}
+
+/* Função para transformar uma subárvore em um heap */
+void heapify(int *array, int size, int i) {
+    int largest = i;       /* Inicializa o maior como raiz */
+    int left = 2 * i + 1;  /* índice do filho esquerdo */
+    int right = 2 * i + 2; /* índice do filho direito */
+
+    /* Se o filho esquerdo é maior que a raiz */
+    if (left < size && array[left] > array[largest])
+        largest = left;
+
+    /* Se o filho direito é maior que o maior até agora */
+    if (right < size && array[right] > array[largest])
+        largest = right;
+
+    /* Se o maior não é a raiz */
+    if (largest != i) {
+        swap(&array[i], &array[largest]);
+        
+        /* Heapify recursivamente a subárvore afetada */
+        heapify(array, size, largest);
     }
 }
