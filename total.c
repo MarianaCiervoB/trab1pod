@@ -301,3 +301,5 @@ void bucketSort(int *array, int size, int max_value) {
     free(buckets);
     free(bucket_sizes);
 }
+
+/* gcc -ansi -Wall -pedantic total.c -o total */
