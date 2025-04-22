@@ -203,12 +203,12 @@ void merge(int *vet, int l, int m, int r) {
     free(R);
 }
 
-void mergeSort(int *vet, int l, int r) {
+void MergeSort(int *vet, int l, int r) {
     int m;
     if (l < r) {
         m = l + (r - l) / 2;
-        mergeSort(vet, l, m);
-        mergeSort(vet, m + 1, r);
+        MergeSort(vet, l, m);
+        MergeSort(vet, m + 1, r);
         merge(vet, l, m, r);
     }
 }
@@ -281,7 +281,7 @@ int main() {
 
     /* Merge Sort */
     inicio = clock();
-    MergeSort(copia_vet_2, tamVet - 1);
+    MergeSort(copia_vet_2, 0, tamVet - 1);
     fim = clock();
     tempo_merge = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
 
