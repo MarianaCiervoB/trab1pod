@@ -1,4 +1,4 @@
- Função principal (main)
+Função principal (main)
 Pergunta pro usuário se quer um array aleatório ou parcialmente ordenado;
 
 Lê o tamanho do array;
@@ -52,9 +52,9 @@ Cronometra e mostra quanto tempo cada um levou;
 
 
 
-Relatório: Comparação de Algoritmos de Ordenação com Diferentes Tipos de Arrays
-🧠 Objetivo
-O objetivo deste experimento é avaliar o desempenho de diferentes algoritmos de ordenação em arrays de inteiros com tamanhos variáveis, considerando dois cenários:
+Relatório: Comparação de Diferentes Algoritmos de Ordenação com Diferentes Tipos de Arrays
+
+Buscando avaliar o desempenho de diferentes algoritmos de ordenação em arrays de inteiros com tamanhos variáveis, consideramos dois cenários:
 
 Array totalmente aleatório
 
