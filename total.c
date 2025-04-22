@@ -236,19 +236,17 @@ int main() {
     fgets(linha, sizeof(linha), stdin);
     sscanf(linha, "%d", &tamVet);
 
+    limite = tamVet;
+
     vet = (int *)malloc(sizeof(int) * tamVet);
     copia_vet_1 = (int *)malloc(sizeof(int) * tamVet);
     copia_vet_2 = (int *)malloc(sizeof(int) * tamVet);
     copia_vet_3 = (int *)malloc(sizeof(int) * tamVet);
 
-    if (vet == NULL || copia_vet_1 == NULL /* || copia_do_vetor_para_merge == NULL || copia_do_vetor_para_heap == NULL */) {
+    if (vet == NULL || copia_vet_1 == NULL || copia_vet_2 == NULL || copia_vet_3 == NULL) {
     printf("Erro de alocacao de memoria.\n");
     return 1;
     }
-
-    printf("Limite superior dos valores: ");
-    fgets(linha, sizeof(linha), stdin);
-    sscanf(linha, "%d", &limite);
 
     if (opcao == 1) {
         geraN(vet, tamVet, limite);
@@ -259,10 +257,8 @@ int main() {
         printf("Opcao invalida.\n");
         free(vet);
         free(copia_vet_1);
-        /*
-        free(copia_do_vetor_para_merge)
-        free(copia_do_vetor_para_heap)
-        */
+        free(copia_vet_2);
+        free(copia_vet_3);
         return 1;
     }
 
@@ -273,7 +269,7 @@ int main() {
 
     /* Bucket Sort tradicional*/
     inicio = clock();
-    bucketSortTradicional(vet, tamVet);
+    bucketSortTradicional(vet, tamVet - 1);
     fim = clock();
     tempo_bucket = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
 
@@ -283,25 +279,28 @@ int main() {
     fim = clock();
     tempo_quick = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
 
-    /*
-    MergeSort(vet, tamVet);
-    printf("\n- Merge Sort:\n");
-    print(vet, tamVet);
+    /* Merge Sort */
+    inicio = clock();
+    MergeSort(copia_vet_2, tamVet - 1);
+    fim = clock();
+    tempo_merge = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
 
-    HeapSort(vet, tamVet);
-    printf("\n- Heap Sort:\n");
-    print(vet, tamVet);
-    */
+    /* Heap Sort */
+    inicio = clock();
+    HeapSort(copia_vet_3, tamVet - 1);
+    fim = clock();
+    tempo_heap = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
 
+    /* Compara os tempos de execução */
     printf("\nTempo de execucao:\n");
     printf("- Bucket Sort: %.4f segundos\n", tempo_bucket);
     printf("- Quick Sort : %.4f segundos\n", tempo_quick);
+    printf("- Merge Sort: %.4f segundos\n", tempo_merge);
+    printf("- Heap Sort : %.4f segundos\n", tempo_heap);
 
     free(vet);
     free(copia_vet_1);
-    /*
-    free(copia_do_vetor_para_merge)
-    free(copia_do_vetor_para_heap)
-    */
+    free(copia_vet_2);
+    free(copia_vet_3);
     return 0;
 }
