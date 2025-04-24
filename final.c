@@ -26,9 +26,9 @@ void insertionSort(int *arr, int n) {
     }
 }
 
-/* =================== Insertion Sort =================== */
+/* =================== Bucket Sort Otimizado =================== */
 
-void insertionSort(int *array, int n) {
+void bucketSort(int *array, int n) {
     int i, j, k, idx, max = 0;
     int **buckets, *bucketSizes;
     int N_BUCKETS;
@@ -167,11 +167,11 @@ int main() {
     t1 = clock();
     printf("QuickSort: %.2fs\n", difTempo(t0, t1));
 
-    /* Teste InsertionSort */
+    /* Teste BucketSort */
     t0 = clock();
-    insertionSort(copia2, tamVet);
+    bucketSort(copia2, tamVet);
     t1 = clock();
-    printf("InsertionSort: %.2fs\n", difTempo(t0, t1));
+    printf("BucketSort: %.2fs\n", difTempo(t0, t1));
 
     /* Libera memória */
     free(vet);
