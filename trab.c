@@ -27,39 +27,75 @@ void insertionSort(int *arr, int n) {
 
 /* =================== Bucket Sort =================== */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <limits.h> /* Para INT_MAX */
+
 void bucketSort(int *array, int n) {
     int N_BUCKETS, max, stepSize, idx, k, i, j, m, chave;
     int **buckets, *bucketCount, *bucketCapacity;
     int *tmp;
 
-    N_BUCKETS = (int)sqrt(n); /* número padrão de buckets */
-    if (N_BUCKETS > 10000) N_BUCKETS = 10000;
+    if (n <= 0) return; /* Se o array estiver vazio, não faz nada */
 
-    buckets = malloc(N_BUCKETS * sizeof(int*));
+    N_BUCKETS = (int)sqrt(n);
+    if (N_BUCKETS > 10000) N_BUCKETS = 10000;
+    if (N_BUCKETS <= 0) N_BUCKETS = 1; /* Garante pelo menos 1 bucket */
+
+    buckets = malloc(N_BUCKETS * sizeof(int *));
     bucketCount = calloc(N_BUCKETS, sizeof(int));
     bucketCapacity = malloc(N_BUCKETS * sizeof(int));
 
-    stepSize = 64; /* tamanho inicial e fator de crescimento */
+    if (!buckets || !bucketCount || !bucketCapacity) {
+        printf("Erro na alocação inicial\n");
+        exit(1);
+    }
+
+    stepSize = 64; /* Tamanho inicial dos buckets */
 
     for (i = 0; i < N_BUCKETS; i++) {
         bucketCapacity[i] = stepSize;
         buckets[i] = malloc(stepSize * sizeof(int));
+        if (!buckets[i]) {
+            printf("Erro ao alocar bucket %d\n", i);
+            exit(1);
+        }
     }
 
-    /* encontra o maior valor pra normalizar */
+    /* Encontra o maior valor no array */
     max = array[0];
     for (i = 1; i < n; i++) {
         if (array[i] > max) max = array[i];
     }
 
-    /* distribui os valores nos buckets */
+    /* Evita problemas com divisão por zero ou overflow */
+    if (max == INT_MAX) max--; /* Ajuste para evitar overflow */
+    if (max < 0) max = 0; /* Se todos forem negativos, trata como zero */
+
+    /* Distribui os elementos nos buckets */
     for (i = 0; i < n; i++) {
-        idx = (array[i] * N_BUCKETS) / (max + 1);
+        if (max == 0) {
+            idx = 0; /* Todos vão para o bucket 0 */
+        } else {
+            idx = (array[i] * N_BUCKETS) / (max + 1);
+        }
+
+        /* Garante que idx está dentro dos limites */
+        if (idx < 0) idx = 0;
+        if (idx >= N_BUCKETS) idx = N_BUCKETS - 1;
+
+        /* Realoca o bucket se necessário */
         if (bucketCount[idx] >= bucketCapacity[idx]) {
             bucketCapacity[idx] *= 2;
             tmp = realloc(buckets[idx], bucketCapacity[idx] * sizeof(int));
             if (!tmp) {
                 printf("Erro de realocação no bucket %d\n", idx);
+                /* Libera toda a memória antes de sair */
+                for (j = 0; j < N_BUCKETS; j++) free(buckets[j]);
+                free(buckets);
+                free(bucketCount);
+                free(bucketCapacity);
                 exit(1);
             }
             buckets[idx] = tmp;
@@ -67,11 +103,11 @@ void bucketSort(int *array, int n) {
         buckets[idx][bucketCount[idx]++] = array[i];
     }
 
-    /* ordena e junta */
+    /* Ordena cada bucket e copia de volta para o array */
     k = 0;
     for (i = 0; i < N_BUCKETS; i++) {
         if (bucketCount[i] > 0) {
-            /* insertionSort */
+            /* Insertion Sort dentro do bucket */
             for (j = 1; j < bucketCount[i]; j++) {
                 chave = buckets[i][j];
                 m = j - 1;
@@ -82,13 +118,14 @@ void bucketSort(int *array, int n) {
                 buckets[i][m + 1] = chave;
             }
 
-            /* copia pro array final */
+            /* Copia os elementos ordenados de volta para o array */
             for (j = 0; j < bucketCount[i]; j++) {
                 array[k++] = buckets[i][j];
             }
         }
     }
 
+    /* Libera toda a memória alocada */
     for (i = 0; i < N_BUCKETS; i++) {
         free(buckets[i]);
     }
@@ -162,21 +199,67 @@ void heapsort(int a[], int n) {
   }
 }
 
-/* =================== Bubble Sort =================== */
+/* =================== Merge Sort =================== */
 
-void bubbleSort(int *vetor, int tam) {
-  int cont, troca, aux;
-  do {
-    troca = 0;
-    for (cont = 0; cont < (tam - 1); cont++) {
-      if (vetor[cont] > vetor[cont + 1]) {
-        aux = vetor[cont];
-        vetor[cont] = vetor[cont + 1];
-        vetor[cont + 1] = aux;
-        troca = 1;
+/* Implementação do Merge Sort */
+void merge(int *array, int l, int m, int r) {
+  int i, j, k;
+  int n1 = m - l + 1;
+  int n2 = r - m;
+  int *L, *R;
+
+  /* Cria arrays temporários */
+  L = malloc(n1 * sizeof(int));
+  R = malloc(n2 * sizeof(int));
+
+  /* Copia dados para os arrays temporários */
+  for (i = 0; i < n1; i++)
+      L[i] = array[l + i];
+  for (j = 0; j < n2; j++)
+      R[j] = array[m + 1 + j];
+
+  /* Merge os arrays temporários de volta ao array principal */
+  i = 0;
+  j = 0;
+  k = l;
+  
+  while (i < n1 && j < n2) {
+      if (L[i] <= R[j]) {
+          array[k] = L[i];
+          i++;
+      } else {
+          array[k] = R[j];
+          j++;
       }
-    }
-  } while (troca);
+      k++;
+  }
+
+  /* Copia os elementos restantes de L[] */
+  while (i < n1) {
+      array[k] = L[i];
+      i++;
+      k++;
+  }
+
+  /* Copia os elementos restantes de R[] */
+  while (j < n2) {
+      array[k] = R[j];
+      j++;
+      k++;
+  }
+
+  free(L);
+  free(R);
+}
+
+void mergeSort(int *array, int l, int r) {
+  int m;
+  if (l < r) {
+      m = l + (r - l) / 2;
+      mergeSort(array, l, m);
+      mergeSort(array, m + 1, r);
+      merge(array, l, m, r);
+  }
 }
 
 /* =================== MAIN =================== */
@@ -223,10 +306,11 @@ int main() {
 
   printf("\nResultados:\n");
 
- /* t0 = clock();
-  bubbleSort(vet, tamVet);
+  /* Testa o MergeSort */
+  t0 = clock();
+  mergeSort(vet, 0, tamVet - 1);
   t1 = clock();
-  printf("BubbleSort: %.2f segundos\n", difTempo(t0, t1));*/
+  printf("MergeSort: %.2f segundos\n", merge_time(t0, t1));
 
   t0 = clock();
   quickSort(copia1, 0, tamVet - 1);
