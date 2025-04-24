@@ -167,11 +167,11 @@ int main() {
     t1 = clock();
     printf("QuickSort: %.2fs\n", difTempo(t0, t1));
 
-    /* Teste BucketSort */
+    /* Teste InsertionSort */
     t0 = clock();
-    bucketSort(copia2, tamVet);
+    insertionSort(copia2, tamVet);
     t1 = clock();
-    printf("BucketSort: %.2fs\n", difTempo(t0, t1));
+    printf("InsertionSort: %.2fs\n", difTempo(t0, t1));
 
     /* Libera memória */
     free(vet);
