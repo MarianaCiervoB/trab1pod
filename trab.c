@@ -1,289 +1,252 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <math.h>
 #include <time.h>
 
-/* Protótipos das funções */
-void geraN(int *array, int size, int max_value);
-void swap(int *a, int *b);
-void insertionSort(int *array, int size);
-void bubbleSort(int *array, int size);  
-void quickSort(int *array, int size);
-void merge(int *array, int l, int m, int r);
-void mergeSort(int *array, int l, int r);
-void heapSort(int *array, int size);
-void heapify(int *array, int size, int i);
+#define MAX_LINE 16
 
+/* =================== Funções Auxiliares =================== */
 
-/* Função principal */
+double difTempo(clock_t t0, clock_t t1) {
+  return (double)(t1 - t0) / CLOCKS_PER_SEC;
+}
+
+void insertionSort(int *arr, int n) {
+  int i, chave, j;
+  for (i = 1; i < n; i++) {
+    chave = arr[i];
+    j = i - 1;
+    while (j >= 0 && arr[j] > chave) {
+      arr[j + 1] = arr[j];
+      j--;
+    }
+    arr[j + 1] = chave;
+  }
+}
+
+/* =================== Bucket Sort =================== */
+
+void bucketSort(int *array, int n) {
+    int N_BUCKETS, max, stepSize, idx, k, i, j, m, chave;
+    int **buckets, *bucketCount, *bucketCapacity;
+    int *tmp;
+
+    N_BUCKETS = (int)sqrt(n); /* número padrão de buckets */
+    if (N_BUCKETS > 10000) N_BUCKETS = 10000;
+
+    buckets = malloc(N_BUCKETS * sizeof(int*));
+    bucketCount = calloc(N_BUCKETS, sizeof(int));
+    bucketCapacity = malloc(N_BUCKETS * sizeof(int));
+
+    stepSize = 64; /* tamanho inicial e fator de crescimento */
+
+    for (i = 0; i < N_BUCKETS; i++) {
+        bucketCapacity[i] = stepSize;
+        buckets[i] = malloc(stepSize * sizeof(int));
+    }
+
+    /* encontra o maior valor pra normalizar */
+    max = array[0];
+    for (i = 1; i < n; i++) {
+        if (array[i] > max) max = array[i];
+    }
+
+    /* distribui os valores nos buckets */
+    for (i = 0; i < n; i++) {
+        idx = (array[i] * N_BUCKETS) / (max + 1);
+        if (bucketCount[idx] >= bucketCapacity[idx]) {
+            bucketCapacity[idx] *= 2;
+            tmp = realloc(buckets[idx], bucketCapacity[idx] * sizeof(int));
+            if (!tmp) {
+                printf("Erro de realocação no bucket %d\n", idx);
+                exit(1);
+            }
+            buckets[idx] = tmp;
+        }
+        buckets[idx][bucketCount[idx]++] = array[i];
+    }
+
+    /* ordena e junta */
+    k = 0;
+    for (i = 0; i < N_BUCKETS; i++) {
+        if (bucketCount[i] > 0) {
+            /* insertionSort */
+            for (j = 1; j < bucketCount[i]; j++) {
+                chave = buckets[i][j];
+                m = j - 1;
+                while (m >= 0 && buckets[i][m] > chave) {
+                    buckets[i][m + 1] = buckets[i][m];
+                    m--;
+                }
+                buckets[i][m + 1] = chave;
+            }
+
+            /* copia pro array final */
+            for (j = 0; j < bucketCount[i]; j++) {
+                array[k++] = buckets[i][j];
+            }
+        }
+    }
+
+    for (i = 0; i < N_BUCKETS; i++) {
+        free(buckets[i]);
+    }
+    free(buckets);
+    free(bucketCount);
+    free(bucketCapacity);
+}
+
+/* =================== Quick Sort =================== */
+
+int partition(int *vet, int lo, int hi) {
+  int pivo = vet[lo];
+  int i = lo - 1;
+  int j = hi + 1;
+  int aux;
+
+  while (1) {
+    do { j--; } while (vet[j] > pivo);
+    do { i++; } while (vet[i] < pivo);
+
+    if (i < j) {
+      aux = vet[i];
+      vet[i] = vet[j];
+      vet[j] = aux;
+    } else {
+      return j;
+    }
+  }
+}
+
+void quickSort(int *vet, int lo, int hi) {
+  if (lo < hi) {
+    int p = partition(vet, lo, hi);
+    quickSort(vet, lo, p);
+    quickSort(vet, p + 1, hi);
+  }
+}
+
+/* =================== Heap Sort =================== */
+
+void heapsort(int a[], int n) {
+  int i = n / 2;
+  int pai, filho, t;
+
+  for (;;) {
+    if (i > 0) {
+      i--;
+      t = a[i];
+    } else {
+      n--;
+      if (n == 0) return;
+      t = a[n];
+      a[n] = a[0];
+    }
+
+    pai = i;
+    filho = i * 2 + 1;
+
+    while (filho < n) {
+      if ((filho + 1 < n) && (a[filho + 1] > a[filho]))
+        filho++;
+      if (a[filho] > t) {
+        a[pai] = a[filho];
+        pai = filho;
+        filho = pai * 2 + 1;
+      } else {
+        break;
+      }
+    }
+    a[pai] = t;
+  }
+}
+
+/* =================== Bubble Sort =================== */
+
+void bubbleSort(int *vetor, int tam) {
+  int cont, troca, aux;
+  do {
+    troca = 0;
+    for (cont = 0; cont < (tam - 1); cont++) {
+      if (vetor[cont] > vetor[cont + 1]) {
+        aux = vetor[cont];
+        vetor[cont] = vetor[cont + 1];
+        vetor[cont + 1] = aux;
+        troca = 1;
+      }
+    }
+  } while (troca);
+}
+
+/* =================== MAIN =================== */
+
 int main() {
-    int *array, *array_copy1, *array_copy2, *array_copy3, *array_copy4;
-    int size, max_value, i;
-    clock_t start, end;
-    double quick_time, merge_time, heap_time, bubble_time;
+  int i, tamVet, opcao;
+  int *vet, *copia1, *copia2, *copia3;
+  clock_t t0, t1;
 
-    /* Inicializa o gerador de números aleatórios */
-    srand(time(NULL));
+  printf("Escolha o tipo de array:\n");
+  printf("1 - Array completamente aleatorio\n");
+  printf("2 - Array parcialmente ordenado\n");
+  printf("Opcao: ");
+  scanf("%d", &opcao);
 
-    printf("Digite o tamanho do array (ex: 1000000): ");
-    scanf("%d", &size);
-    
-    if (size <= 0) {
-        printf("Tamanho invalido.\n");
-        return 1;
+  printf("Digite o tamanho do array (ex: 1000000): ");
+  scanf("%d", &tamVet);
+
+  vet = (int *)malloc(sizeof(int) * tamVet);
+  copia1 = (int *)malloc(sizeof(int) * tamVet);
+  copia2 = (int *)malloc(sizeof(int) * tamVet);
+  copia3 = (int *)malloc(sizeof(int) * tamVet);
+
+  if (!vet || !copia1 || !copia2 || !copia3) {
+    printf("Erro ao alocar memoria\n");
+    return 1;
+  }
+
+  srand(time(NULL));
+
+  if (opcao == 1) {
+    for (i = 0; i < tamVet; i++) {
+      vet[i] = rand();
     }
-    max_value = size;
-
-    /* Aloca memória para os arrays */
-    array = malloc(size * sizeof(int));
-    array_copy1 = malloc(size * sizeof(int));
-    array_copy2 = malloc(size * sizeof(int));
-    array_copy3 = malloc(size * sizeof(int));
-    array_copy4 = malloc(size * sizeof(int));
-    
-    if (!array || !array_copy1 || !array_copy2 || !array_copy3 || !array_copy4) {
-        printf("Erro na alocacao de memoria.\n");
-        if (array) free(array);
-        if (array_copy1) free(array_copy1);
-        if (array_copy2) free(array_copy2);
-        if (array_copy3) free(array_copy3);
-        if (array_copy4) free(array_copy4);
-        return 1;
+  } else {
+    for (i = 0; i < tamVet; i++) {
+      vet[i] = i + (rand() % 10);
     }
+  }
 
-    /* Gera o array aleatório */
-    geraN(array, size, max_value);
-    
-    /* Faz cópias do array original */
-    for (i = 0; i < size; i++) {
-        array_copy1[i] = array[i];
-        array_copy2[i] = array[i];
-        array_copy3[i] = array[i];
-        array_copy4[i] = array[i];
-    }
+  memcpy(copia1, vet, sizeof(int) * tamVet);
+  memcpy(copia2, vet, sizeof(int) * tamVet);
+  memcpy(copia3, vet, sizeof(int) * tamVet);
 
-    /* Testa o BubbleSort */
-    start = clock();
-    bubbleSort(array_copy4, size);
-    end = clock();
-    bubble_time = ((double)(end - start)) / CLOCKS_PER_SEC;
+  printf("\nResultados:\n");
 
-    /* Testa o QuickSort */
-    start = clock();
-    quickSort(array_copy1, size);
-    end = clock();
-    quick_time = ((double)(end - start)) / CLOCKS_PER_SEC;
+ /* t0 = clock();
+  bubbleSort(vet, tamVet);
+  t1 = clock();
+  printf("BubbleSort: %.2f segundos\n", difTempo(t0, t1));*/
 
-    /* Testa o MergeSort */
-    start = clock();
-    mergeSort(array_copy2, 0, size - 1);
-    end = clock();
-    merge_time = ((double)(end - start)) / CLOCKS_PER_SEC;
+  t0 = clock();
+  quickSort(copia1, 0, tamVet - 1);
+  t1 = clock();
+  printf("QuickSort: %.2f segundos\n", difTempo(t0, t1));
 
-    /* Testa o HeapSort */
-    start = clock();
-    heapSort(array_copy3, size);
-    end = clock();
-    heap_time = ((double)(end - start)) / CLOCKS_PER_SEC;
+  t0 = clock();
+  heapsort(copia2, tamVet);
+  t1 = clock();
+  printf("HeapSort: %.2f segundos\n", difTempo(t0, t1));
 
-    printf("\nResultados:\n");
-    printf("BubbleSort: %.2f segundos\n", bubble_time);
-    printf("QuickSort: %.2f segundos\n", quick_time);
-    printf("MergeSort: %.2f segundos\n", merge_time);
-    printf("HeapSort: %.2f segundos\n", heap_time);
+  t0 = clock();
+  bucketSort(copia3, tamVet);
+  t1 = clock();
+  printf("BucketSort: %.2f segundos\n", difTempo(t0, t1));
 
-    /* Libera a memória alocada */
-    free(array);
-    free(array_copy1);
-    free(array_copy2);
-    free(array_copy3);
-    free(array_copy4);
-    
-    return 0;
-}
+  free(vet);
+  free(copia1);
+  free(copia2);
+  free(copia3);
 
-/* Gera números aleatórios no vetor */
-void geraN(int *array, int size, int max_value) {
-    int i;
-    for (i = 0; i < size; i++) {
-        array[i] = rand() % (max_value + 1);
-    }
-}
-
-/* Função auxiliar para trocar elementos */
-void swap(int *a, int *b) {
-    int temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
-/* Implementação do Bubble Sort */
-void bubbleSort(int *array, int size) {
-    int i, j;
-    for (i = 0; i < size-1; i++) {
-      
-        for (j = 0; j < size-i-1; j++) {
-            if (array[j] > array[j+1]) {
-                swap(&array[j], &array[j+1]);
-            }
-        }
-    }
-}
-
-/* Implementação do Insertion Sort */
-void insertionSort(int *array, int size) {
-    int i, j, key;
-    for (i = 1; i < size; i++) {
-        key = array[i];
-        j = i - 1;
-        
-        while (j >= 0 && array[j] > key) {
-            array[j + 1] = array[j];
-            j--;
-        }
-        array[j + 1] = key;
-    }
-}
-
-/* Implementação do QuickSort iterativo */
-void quickSort(int *array, int size) {
-    int *stack;
-    int top = -1;
-    int high, low, pivot, i, j, partition_index;
-    
-    /* Cria uma pilha manual */
-    stack = malloc(size * sizeof(int));
-    
-    /* Empilha os limites inicial e final */
-    stack[++top] = 0;
-    stack[++top] = size - 1;
-
-    while (top >= 0) {
-        /* Desempilha os limites */
-        high = stack[top--];
-        low = stack[top--];
-        
-        /* Particiona o array */
-        pivot = array[high];
-        i = low - 1;
-        
-        for (j = low; j <= high - 1; j++) {
-            if (array[j] < pivot) {
-                i++;
-                swap(&array[i], &array[j]);
-            }
-        }
-        swap(&array[i + 1], &array[high]);
-        partition_index = i + 1;
-        
-        /* Empilha os subarrays esquerdo e direito */
-        if (partition_index - 1 > low) {
-            stack[++top] = low;
-            stack[++top] = partition_index - 1;
-        }
-        
-        if (partition_index + 1 < high) {
-            stack[++top] = partition_index + 1;
-            stack[++top] = high;
-        }
-    }
-    
-    free(stack);
-}
-
-/* Implementação do Merge Sort */
-void merge(int *array, int l, int m, int r) {
-    int i, j, k;
-    int n1 = m - l + 1;
-    int n2 = r - m;
-    int *L, *R;
-
-    /* Cria arrays temporários */
-    L = malloc(n1 * sizeof(int));
-    R = malloc(n2 * sizeof(int));
-
-    /* Copia dados para os arrays temporários */
-    for (i = 0; i < n1; i++)
-        L[i] = array[l + i];
-    for (j = 0; j < n2; j++)
-        R[j] = array[m + 1 + j];
-
-    /* Merge os arrays temporários de volta ao array principal */
-    i = 0;
-    j = 0;
-    k = l;
-    
-    while (i < n1 && j < n2) {
-        if (L[i] <= R[j]) {
-            array[k] = L[i];
-            i++;
-        } else {
-            array[k] = R[j];
-            j++;
-        }
-        k++;
-    }
-
-    /* Copia os elementos restantes de L[] */
-    while (i < n1) {
-        array[k] = L[i];
-        i++;
-        k++;
-    }
-
-    /* Copia os elementos restantes de R[] */
-    while (j < n2) {
-        array[k] = R[j];
-        j++;
-        k++;
-    }
-
-    free(L);
-    free(R);
-}
-
-void mergeSort(int *array, int l, int r) {
-    int m;
-    if (l < r) {
-        m = l + (r - l) / 2;
-        mergeSort(array, l, m);
-        mergeSort(array, m + 1, r);
-        merge(array, l, m, r);
-    }
-}
-
-void heapSort(int *array, int size) {
-    /* Declarar TODAS as variáveis no início */
-    int i, j;  
-    /* Construir o heap (reorganizar o array) */
-    for (i = size / 2 - 1; i >= 0; i--)
-        heapify(array, size, i);
-
-    /* Extrair elementos do heap um por um */
-    for (j = size - 1; j > 0; j--) {
-        swap(&array[0], &array[j]);
-        heapify(array, j, 0);
-    }
-}
-
-/* Função para transformar uma subárvore em um heap */
-void heapify(int *array, int size, int i) {
-    int largest = i;       /* Inicializa o maior como raiz */
-    int left = 2 * i + 1;  /* índice do filho esquerdo */
-    int right = 2 * i + 2; /* índice do filho direito */
-
-    /* Se o filho esquerdo é maior que a raiz */
-    if (left < size && array[left] > array[largest])
-        largest = left;
-
-    /* Se o filho direito é maior que o maior até agora */
-    if (right < size && array[right] > array[largest])
-        largest = right;
-
-    /* Se o maior não é a raiz */
-    if (largest != i) {
-        swap(&array[i], &array[largest]);
-        
-        /* Heapify recursivamente a subárvore afetada */
-        heapify(array, size, largest);
-    }
+  return 0;
 }
