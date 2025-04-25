@@ -1,128 +1,73 @@
-Função principal (main)
-Pergunta pro usuário se quer um array aleatório ou parcialmente ordenado;
+📄 Relatório Técnico - Análise e Implementação de Algoritmos de Ordenação
+✨ Introdução
+Neste projeto, foi desenvolvido um comparativo entre quatro algoritmos de ordenação: QuickSort, MergeSort, HeapSort e uma versão otimizada de BucketSort. Os testes foram feitos com arrays contendo 10 milhões de elementos, tanto com dados aleatórios quanto parcialmente ordenados.
 
-Lê o tamanho do array;
+🪣 Bucket Sort Otimizado
+🧠 Lógica e Estrutura
+O BucketSort funciona distribuindo os elementos em “baldes” (buckets), e depois ordenando cada bucket individualmente. A última etapa é juntar todos os buckets em um único array ordenado.
 
-Cria 5 cópias do array (pra testar cada algoritmo com a mesma entrada);
+📏 Escolha do Tamanho dos Buckets
+A quantidade de buckets foi definida como a raiz quadrada do tamanho do array:
 
-Executa e mede o tempo de execução de cada algoritmo de ordenação;
+c
+Copiar
+Editar
+N_BUCKETS = (int)sqrt(n);
+Essa escolha é uma heurística comum porque equilibra bem o número de buckets e a quantidade de elementos por bucket. Evita tanto:
 
-Mostra os tempos no final.
+buckets lotados demais (ficam lentos),
 
-🧩 Funções auxiliares
-generateRandomArray
-Gera um array com valores aleatórios entre 0 e max_value.
+quanto muitos buckets vazios (ineficiente e gasta memória à toa).
 
-generatePartiallySortedArray
-Cria um array aleatório e depois aplica uma ordenação parcial, pra simular dados "meio bagunçados".
+Para evitar exageros, foi colocado um limite superior com MAX_BUCKETS = 10000.
 
-partialSort
-Ordena parcialmente o array usando uma técnica parecida com o Shell Sort, mas só até certo ponto (usando alguns gaps específicos).
+🧹 Ordenação Interna dos Buckets
+Dentro de cada bucket foi usado Insertion Sort. Por quê?
 
-swap
-Troca dois valores de lugar — usada em vários algoritmos.
+Insertion é bem rápido pra conjuntos pequenos e quase ordenados.
 
-🔄 Algoritmos de ordenação
-bubbleSort
-Clássico e lerdinho: compara elementos vizinhos e troca se tiver fora de ordem. Vai repetindo até tudo ficar certo.
+Como os buckets têm poucos elementos, o overhead do Quick ou Merge não compensa.
 
-insertionSort
-Usado no BucketSort. Insere cada elemento na posição correta comparando com os anteriores — tipo organizar cartas na mão.
+⚙️ Algoritmos de Ordenação Utilizados
 
-quickSort
-Implementado de forma iterativa com pilha (sem recursão). Escolhe um pivô, separa os menores à esquerda e os maiores à direita, e repete o processo.
+Algoritmo	Características Principais
+QuickSort	Muito rápido, mas sensível à ordem dos dados. Divide e conquista.
+MergeSort	Estável, eficiente e com desempenho previsível. Divide e conquista com uso de memória auxiliar.
+InsertionSort	Simples e rápido para pequenos vetores. Usado só nos buckets e em pequenos merges.
+HeapSort	Uso constante de memória e bom desempenho no pior caso, mas não tão rápido quanto os outros.
+⏱️ Desempenho Observado
+🔀 Com dados aleatórios (10 milhões):
 
-heapSort
-Transforma o array em um heap máximo e vai tirando o maior elemento (raiz) e jogando pro final do array.
+Algoritmo	Tempo (segundos)
+QuickSort	1.34s
+MergeSort	1.27s
+InsertionSort	15.38s 🐢
+HeapSort	3.43s
+📈 Com dados parcialmente ordenados:
 
-Usa a função heapify pra manter a estrutura de heap.
+Algoritmo	Tempo (segundos)
+QuickSort	0.62s
+MergeSort	0.48s
+InsertionSort	0.27s ⚡
+HeapSort	2.06s
+🧪 Análise e Comparação
+QuickSort se dá muito bem com dados aleatórios, mas tem desempenho instável se a entrada já estiver ordenada ou com muitos elementos iguais.
 
-bucketSort
-Divide os elementos em baldes (buckets) com base no valor, ordena cada bucket com insertionSort e junta tudo no final.
+MergeSort foi o mais consistente: rápido tanto com dados bagunçados quanto organizados.
 
-💡 Resumo da ideia geral:
-Gera um array (aleatório ou parcialmente ordenado);
+InsertionSort, sozinho, só presta com dados quase ordenados. Foi muito lento com vetores aleatórios.
 
-Copia ele várias vezes pra manter o teste justo;
+HeapSort fica no meio do caminho: confiável, mas com tempo maior do que Merge e Quick.
 
-Aplica cada algoritmo de ordenação;
+O BucketSort brilha quando os dados estão razoavelmente uniformes e a distribuição permite buckets balanceados.
 
-Cronometra e mostra quanto tempo cada um levou;
+✅ Conclusão
+A estratégia usada de aplicar BucketSort com InsertionSort dentro se mostrou vantajosa pela simplicidade e boa performance com dados bem distribuídos. O uso de sqrt(n) como número de buckets foi acertado pra balancear tempo e memória. Já o uso de Insertion para os buckets pequenos deu aquele boost de desempenho em casos com dados parcialmente ordenados.
 
-______________________________________________________________________________________________________________________________________________________
+![image](https://github.com/user-attachments/assets/46e6bf7a-3da3-4d82-8139-e2edb19fd313)
 
+Com dados aleatórios, o MergeSort e o QuickSort mandaram bem, enquanto o InsertionSort ficou pra trás (muito lento).
 
-Relatório: Comparação de Diferentes Algoritmos de Ordenação com Diferentes Tipos de Arrays
+Já com dados parcialmente ordenados, o InsertionSort surpreende e dá show — isso porque ele se aproveita bem da ordenação parcial, enquanto o HeapSort continua mais pesadão.
 
-Buscando avaliar o desempenho de diferentes algoritmos de ordenação em arrays de inteiros com tamanhos variáveis, consideramos dois cenários:
-
-Array totalmente aleatório
-
-Array parcialmente ordenado
-
-Os algoritmos implementados e comparados foram:
-
-- BubbleSort
-
-- QuickSort
-
-- HeapSort
-
-- BucketSort Tradicional (com ordenação interna usando InsertionSort)
-
-Detalhes dos Algoritmos
-* BubbleSort
-Funcionamento: compara elementos vizinhos e os troca se estiverem fora de ordem.
-
-Complexidade: O(n²) no pior e médio caso.
-
-Observações: Simples e extremamente ineficiente para arrays grandes.
-
-* QuickSort (iterativo)
-Funcionamento: divide o array em duas partições usando um pivô, recursivamente (aqui, feito com pilha).
-
-Complexidade: O(n log n) no caso médio; O(n²) no pior (se for uma má escolha de pivô).
-
-Observações: Muito rápido na média; algoritmo muito bom de uso geral.
-
-* HeapSort
-Funcionamento: transforma o array em um heap máximo e vai removendo o maior elemento.
-
-Complexidade: O(n log n) sempre.
-
-Observações: Desempenho estável, mas com mais overhead que o QuickSort.
-
-* BucketSort
-Funcionamento: Divide os elementos em "baldes" com base em um intervalo (range). Ordena cada balde individualmente com outro algoritmo e depois concatena todos os baldes no array final.
-
-Escolha do Tamanho do Bucket(range):
-Fórmula usada: bucket_range = (max_value + 1) / bucket_count + 1
-
-bucket_count foi fixado em 10, por ser um número que divide bem os valores aleatórios sem criar buckets sobrecarregados ou vazios demais. Valores pequenos criariam buckets grandes e tornariam a ordenação interna mais lenta; valores altos criariam overhead com muitos buckets vazios.
-
-* Algoritmo de ordenação usado nos buckets: InsertionSort
-
-InsertionSort é muito eficiente em subarrays pequenos ou quase ordenados (o que é geralmente o caso dentro dos buckets);
-
-Tem baixa complexidade de implementação e memória.
-
- Comparação entre os algoritmos
-
-Algoritmo     | Caso ideal                       | Caso ruim                             | Complexidade média | Observações principais
---------------|----------------------------------|----------------------------------------|---------------------|-------------------------
-BubbleSort    | Pequenos arrays quase ordenados  | Arrays grandes ou totalmente bagunçados| O(n²)               | Muito ineficiente em geral
-QuickSort     | Arrays grandes aleatórios        | Dados já ordenados ou todos iguais     | O(n log n)          | Rápido, mas pode cair em O(n²)
-HeapSort      | Dados grandes e aleatórios       | -                                      | O(n log n)          | Estável, mas levemente mais lento que o QuickSort
-BucketSort    | Dados uniformemente distribuídos | Dados concentrados em poucos valores   | O(n + k)            | Ótimo para inteiros com distribuição uniforme
-
-
-* Conclusões
-QuickSort geralmente é o mais rápido nos testes realizados, especialmente para arrays totalmente aleatórios;
-
-HeapSort é mais estável, sem cair em piores casos como o QuickSort pode sofrer;
-
-BubbleSort só serve como referência didática; seu desempenho é horrível para arrays grandes;
-
-BucketSort, com InsertionSort nos baldes, se sai muito bem quando os dados são bem distribuídos, mas pode perder eficiência se os dados se acumulam em poucos buckets;
-
-Em arrays parcialmente ordenados, algoritmos como InsertionSort e até BubbleSort têm performance relativamente melhor, mas ainda assim são superados por QuickSort e HeapSort.
+Pra conjuntos grandes e diversos, MergeSort leva a melhor geral. Mas, se o padrão dos dados ajudar, BucketSort pode ser o rei da performance. 👑
