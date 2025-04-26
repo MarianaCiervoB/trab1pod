@@ -1,19 +1,16 @@
-📄 Relatório Técnico - Análise e Implementação de Algoritmos de Ordenação
-✨ Introdução
-Neste projeto, foi desenvolvido um comparativo entre quatro algoritmos de ordenação: QuickSort, MergeSort, HeapSort e uma versão otimizada de BucketSort. Os testes foram feitos com arrays contendo 10 milhões de elementos, tanto com dados aleatórios quanto parcialmente ordenados.
+Relatório da Implementação de Algoritmos de Ordenação
 
-🪣 Bucket Sort Otimizado
-🧠 Lógica e Estrutura
-O BucketSort funciona distribuindo os elementos em “baldes” (buckets), e depois ordenando cada bucket individualmente. A última etapa é juntar todos os buckets em um único array ordenado.
+* Introdução *
+Comparação entre quatro algoritmos de ordenação: QuickSort, MergeSort, HeapSort e Insertion Sort com Bucket Sort. Os testes foram feitos com arrays contendo 1 milhão, 10 milhões e 100 milhões de elementos, tanto com dados aleatórios quanto parcialmente ordenados.
 
-📏 Escolha do Tamanho dos Buckets
-A quantidade de buckets foi definida como a raiz quadrada do tamanho do array:
+* Bucket Sort *
+O BucketSort funciona distribuindo os elementos em “baldes” (buckets), e depois ordenando cada bucket individualmente. A última etapa é juntar todos os buckets em um único array ordenado. A quantidade de buckets foi definida como a raiz quadrada do tamanho do array:
 
 c
 Copiar
 Editar
 N_BUCKETS = (int)sqrt(n);
-Essa escolha é uma heurística comum porque equilibra bem o número de buckets e a quantidade de elementos por bucket. Evita tanto:
+Essa escolha é comum porque equilibra bem o número de buckets e a quantidade de elementos por bucket. Evita:
 
 buckets lotados demais (ficam lentos),
 
